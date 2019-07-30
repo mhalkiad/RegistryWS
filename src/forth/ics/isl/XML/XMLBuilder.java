@@ -11,6 +11,7 @@ import java.util.UUID;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -151,10 +152,14 @@ public class XMLBuilder {
         //transform the DOM Object to an XML File
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        //transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+        
         DOMSource domSource = new DOMSource(document);
         StreamResult streamResult = new StreamResult(new File(xmlFilePath));
         
         transformer.transform(domSource, streamResult);
+        
  
         return  xmlFilePath;
     }

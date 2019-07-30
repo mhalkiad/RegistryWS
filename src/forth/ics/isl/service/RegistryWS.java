@@ -18,6 +18,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 
@@ -50,7 +51,15 @@ public class RegistryWS {
        
         //System.out.println(output);
         
-        xmlParser.copyXMLFile("/home/mhalkiad/Desktop/xmlFiles/service.xml", "/home/mhalkiad/Desktop/oaiPmh.xml");
+        //xmlParser.copyXMLFile("/home/mhalkiad/Desktop/xmlFiles/service.xml", "/home/mhalkiad/Desktop/oaiPmh.xml");
+        NodeList nodeList = xmlParser.parseWholeXML(xmlParser.getRootElement());
+        
+         for(int i=0; i<nodeList.getLength(); i++)
+         {
+             System.out.println("Node: "+ i +" value: " + nodeList.item(i).getTextContent());
+         }
+         
+         xmlParser.copyElementsToXML("/home/mhalkiad/Desktop/oaiPmh.xml", nodeList);
         
         ArrayList<String> results = (ArrayList<String>) getFileNames(xmlFolder);
         
