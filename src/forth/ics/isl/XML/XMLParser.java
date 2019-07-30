@@ -144,8 +144,8 @@ public class XMLParser {
                  if(n != null && n.getNodeType() == Node.ELEMENT_NODE) {
                     xmlDocument1.adoptNode(n);
                     System.out.println("----------->>>N:" + n.getNodeName());
-                    //xmlDocument1.getElementsByTagName("metadata").item(0).appendChild(n);
-                    xmlDocument1.getDocumentElement().appendChild(n);
+                    xmlDocument1.getElementsByTagName("metadata").item(0).appendChild(n);
+                    //xmlDocument1.getDocumentElement().appendChild(n);
             }
         }
         
@@ -157,7 +157,7 @@ public class XMLParser {
         transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
         
         DOMSource domSource = new DOMSource(xmlDocument1);
-        StreamResult streamResult = new StreamResult(new File("/home/mhalkiad/Desktop/xmlFiles/service.xml"));
+        StreamResult streamResult = new StreamResult(new File(strSource));
         transformer.transform(domSource, streamResult);
     }
 
