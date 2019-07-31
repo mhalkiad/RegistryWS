@@ -5,11 +5,8 @@ import forth.ics.isl.XML.XMLBuilder;
 import forth.ics.isl.XML.XMLParser;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
@@ -17,7 +14,6 @@ import javax.ws.rs.core.Response;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -34,7 +30,9 @@ public class RegistryWS {
     public Response registry(@QueryParam("xml-folder") String xmlFolder) throws ParserConfigurationException, TransformerConfigurationException, TransformerException, SAXException, IOException {
         
         // create initial OAI_PMH xml file
-        XMLBuilder xmlBuilder = new XMLBuilder("/home/mhalkiad/Desktop/oaiPmh.xml");
+        XMLBuilder xmlBuilder = new XMLBuilder(System.getProperty("user.dir") + File.separator +"oaiPmh.xml");
+        System.out.println("OAI-PMH filepath:" + System.getProperty("user.dir") + File.separator +"oaiPmh.xml");
+        
         xmlBuilder.createOaipmhElement("http://www.openarchives.org/OAI/2.0/",
                                        "http://www.w3.org/2001/XMLSchema-instance",
                                        "http://www.openarchives.org/OAI/2.0/\n" +
@@ -43,11 +41,7 @@ public class RegistryWS {
         xmlBuilder.createResponseDateElement();
         xmlBuilder.createRequestElement("http://more.locloud.eu:8080/carare/");
         xmlBuilder.createListRecordsElement();
-        xmlBuilder.createRecordElement("UJA", "metadata");
-        xmlBuilder.createResumptionToken("X599391871/1");
 
-        String initialOAI = xmlBuilder.exportXMLFile();
-        
         // copy each xml file in xmlFolder into OAI-PMH file
         ArrayList<String> results = (ArrayList<String>) getFileNames(xmlFolder);
         
@@ -56,36 +50,16 @@ public class RegistryWS {
             String fileName = results.get(i);
             System.out.println("FileName: " + fileName);
             
-            XMLParser xmlParser = new XMLParser(xmlFolder + fileName);
-            NodeList nodeList = xmlParser.parseWholeXML(xmlParser.getRootElement());
-            xmlParser.copyElementsToXML(initialOAI, nodeList);
+            XMLParser xmlParser = new XMLParser(xmlFolder + File.separator + fileName);
+            NodeList metadataList = xmlParser.parseWholeXML(xmlParser.getRootElement());
+            
+            xmlBuilder.createRecordElement(xmlParser.getTypeElement(), xmlParser.getRootElement(), metadataList);        
         }
         
+        xmlBuilder.createResumptionToken("X599391871/1");
+        String initialOAI = xmlBuilder.exportXMLFile();
         
-        //XMLParser xmlParser = new XMLParser("/home/mhalkiad/Desktop/xmlFiles/service.xml");
-        //String output = xmlParser.getTypeElement();
-       // Node rootElement = xmlParser.getRootElement();
-       //System.out.println(rootElement.getTextContent());
-       // String output = xmlParser.parseWholeXML(rootElement);
-       
-        //System.out.println(output);
-        
-        //xmlParser.copyXMLFile("/home/mhalkiad/Desktop/xmlFiles/service.xml", "/home/mhalkiad/Desktop/oaiPmh.xml");
-        //NodeList nodeList = xmlParser.parseWholeXML(xmlParser.getRootElement());
-        
-//         for(int i=0; i<nodeList.getLength(); i++)
-//         {
-//             System.out.println("Node: "+ i +" value: " + nodeList.item(i).getTextContent());
-//         }
-         
-         //xmlParser.copyElementsToXML("/home/mhalkiad/Desktop/oaiPmh.xml", nodeList);
-        
-//        ArrayList<String> results = (ArrayList<String>) getFileNames(xmlFolder);
-//        
-//        for(int i=0; i<results.size(); i++)
-//            System.out.println(results.get(i));
-       
-        return Response.status(200).entity("ok").build();
+        return Response.status(200).entity(initialOAI).build();
     }
     
     

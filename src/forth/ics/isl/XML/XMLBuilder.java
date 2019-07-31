@@ -6,6 +6,7 @@
 package forth.ics.isl.XML;
 
 import java.io.File;
+import java.io.IOException;
 import java.time.Instant;
 import java.util.UUID;
 import javax.xml.parsers.DocumentBuilder;
@@ -21,6 +22,9 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 
 /**
@@ -105,7 +109,7 @@ public class XMLBuilder {
     }
     
     
-    public void createRecordElement(String setSpec, String metadata) {
+    public void createRecordElement(String setSpec, Node rootElement, NodeList metadataList) throws ParserConfigurationException, SAXException, IOException, TransformerException {
         
         Element recordElement = document.createElement("record");
         listRecordsElement.appendChild(recordElement);
@@ -125,8 +129,7 @@ public class XMLBuilder {
         setSpecElement.appendChild(document.createTextNode(setSpec));
         headerElement.appendChild(setSpecElement);
         
-        Element metadataElement = document.createElement("metadata");
-        metadataElement.appendChild(document.createTextNode(metadata));
+        Element metadataElement = copyElementsToXML(rootElement);
         recordElement.appendChild(metadataElement);
        
     }
@@ -153,7 +156,7 @@ public class XMLBuilder {
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-        //transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
         
         DOMSource domSource = new DOMSource(document);
         StreamResult streamResult = new StreamResult(new File(xmlFilePath));
@@ -162,6 +165,29 @@ public class XMLBuilder {
         
  
         return  xmlFilePath;
+    }
+    
+    
+     
+    private Element copyElementsToXML(Node rootNode) throws ParserConfigurationException, SAXException, IOException, TransformerConfigurationException, TransformerException {
+        
+        Element metadataElement = document.createElement("metadata");
+        
+        rootNode.cloneNode(true);
+        document.adoptNode(rootNode);
+        metadataElement.appendChild(rootNode);
+
+//        for(int i=0; i<nodeList.getLength(); i++) {
+//                Node n  = nodeList.item(i).cloneNode(true);
+//                 if(n != null && n.getNodeType() == Node.ELEMENT_NODE) {
+//                    document.adoptNode(n);
+//                    System.out.println("----------->>>N:" + n.getNodeName());
+//            
+//                    metadataElement.appendChild(n);
+////                    document.getElementsByTagName("metadata").item(0).appendChild(n);
+//            }
+//        }
+        return metadataElement;
     }
     
     
