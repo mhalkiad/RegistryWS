@@ -31,6 +31,7 @@ import org.xml.sax.SAXException;
  *
  * @author mhalkiad
  */
+
 public class XMLBuilder {
     
     private String xmlFilePath;
@@ -39,6 +40,7 @@ public class XMLBuilder {
     private Document document;
     private Element oaiPmh;
     private Element listRecordsElement;
+    
     
     public XMLBuilder(String xmlFilePath) throws ParserConfigurationException {
         
@@ -49,9 +51,9 @@ public class XMLBuilder {
         document = documentBuilder.newDocument();
         
         oaiPmh = document.createElement("OAI-PMH");
-        document.appendChild(oaiPmh);
-        
+        document.appendChild(oaiPmh);   
     }
+    
     
     public void createOaipmhElement(String xmlns, String xsi, String schemaLocation) {
         
@@ -67,8 +69,7 @@ public class XMLBuilder {
         
         oaiPmh.setAttributeNode(xmlnsAttr);
         oaiPmh.setAttributeNode(xsiAttr);
-        oaiPmh.setAttributeNode(schemaLocationAttr);
-        
+        oaiPmh.setAttributeNode(schemaLocationAttr);       
     }
     
     
@@ -76,9 +77,9 @@ public class XMLBuilder {
         
         Element responseDate = document.createElement("responseDate");
         responseDate.appendChild(document.createTextNode(Instant.now().toString()));
-        oaiPmh.appendChild(responseDate);
-        
+        oaiPmh.appendChild(responseDate);   
     }
+    
     
     public void createRequestElement(String serviceURL) {
         
@@ -97,15 +98,14 @@ public class XMLBuilder {
         setAttr.setValue("UJA");
         requestElement.setAttributeNode(setAttr);
         
-        requestElement.appendChild(document.createTextNode(serviceURL));
-        
+        requestElement.appendChild(document.createTextNode(serviceURL));   
     }
+    
     
     public void createListRecordsElement() {
         
        listRecordsElement = document.createElement("ListRecords");
-       oaiPmh.appendChild(listRecordsElement);
-        
+       oaiPmh.appendChild(listRecordsElement);    
     }
     
     
@@ -130,8 +130,7 @@ public class XMLBuilder {
         headerElement.appendChild(setSpecElement);
         
         Element metadataElement = copyElementsToXML(rootElement);
-        recordElement.appendChild(metadataElement);
-       
+        recordElement.appendChild(metadataElement); 
     }
     
     
@@ -144,8 +143,7 @@ public class XMLBuilder {
         
         Attr cursorAttr = document.createAttribute("cursor");
         cursorAttr.setValue("0");
-        resumptionElement.setAttributeNode(cursorAttr);
-        
+        resumptionElement.setAttributeNode(cursorAttr);   
     }
     
     
@@ -156,19 +154,18 @@ public class XMLBuilder {
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
         
         DOMSource domSource = new DOMSource(document);
         StreamResult streamResult = new StreamResult(new File(xmlFilePath));
         
         transformer.transform(domSource, streamResult);
-        
- 
+       
         return  xmlFilePath;
     }
     
     
-     
+  
     private Element copyElementsToXML(Node rootNode) throws ParserConfigurationException, SAXException, IOException, TransformerConfigurationException, TransformerException {
         
         Element metadataElement = document.createElement("metadata");
@@ -189,7 +186,5 @@ public class XMLBuilder {
 //        }
         return metadataElement;
     }
-    
-    
-    
+      
 }

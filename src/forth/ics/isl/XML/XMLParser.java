@@ -20,6 +20,7 @@ import org.xml.sax.SAXException;
  *
  * @author mhalkiad
  */
+
 public class XMLParser {
     
     private File xmlFile;
@@ -51,7 +52,6 @@ public class XMLParser {
         
         return doc.getDocumentElement();
     }
-    
     
        
     public NodeList parseWholeXML(Node startingNode) throws ParserConfigurationException, SAXException, IOException {

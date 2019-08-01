@@ -59,7 +59,12 @@ public class RegistryWS {
         xmlBuilder.createResumptionToken("X599391871/1");
         String initialOAI = xmlBuilder.exportXMLFile();
         
-        return Response.status(200).entity(initialOAI).build();
+        // the service returns the created oai-pmh file 
+        String filepath = System.getProperty("user.dir") + File.separator +"oaiPmh.xml";
+        File file = new File(filepath);
+        Response.ResponseBuilder response = Response.ok((Object) file);
+        response.header("Content-Disposition","attachment; filename=" + filepath);
+        return response.build();
     }
     
     
