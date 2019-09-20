@@ -11,6 +11,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -48,6 +49,30 @@ public class XMLParser {
     }
     
     
+    public String getLastModifiedElement() {
+        
+        String valueStr = "";
+        
+        NodeList nodeList = doc.getElementsByTagName("field");
+        
+        for(int i=0; i<nodeList.getLength(); i++)
+        {
+            Node childNode = nodeList.item(i);
+            if(childNode.getNodeType() == Node.ELEMENT_NODE) {
+                
+                Element element = (Element) childNode;
+                String labelString = element.getElementsByTagName("label").item(0).getTextContent();
+                if(labelString.equals("Last Modified")) {
+                    valueStr = element.getElementsByTagName("value").item(0).getTextContent();
+                }
+    
+            }
+        }
+       
+        return valueStr;
+    }
+    
+    
     public Node getRootElement() {
         
         return doc.getDocumentElement();
@@ -68,7 +93,7 @@ public class XMLParser {
                for (int j = 0; j < nodeMap.getLength(); j++)
                {
                    Node tempNode = nodeMap.item(j);
-                   System.out.println("Attr name : " + tempNode.getNodeName()+ "; Value = " + tempNode.getNodeValue());
+                   //System.out.println("Attr name : " + tempNode.getNodeName()+ "; Value = " + tempNode.getNodeValue());
                }
 
              }

@@ -27,7 +27,10 @@ import org.xml.sax.SAXException;
 public class RegistryWS {
 	
     @GET
-    public Response registry(@QueryParam("xml-folder") String xmlFolder) throws ParserConfigurationException, TransformerConfigurationException, TransformerException, SAXException, IOException {
+    public Response registry(@QueryParam("verb") String verb,
+                             @QueryParam("metadata") String metadata) throws ParserConfigurationException, TransformerConfigurationException, TransformerException, SAXException, IOException {   
+        
+        String xmlFolder = "/home/mhalkiad/Desktop/xmlFiles";
         
         // create initial OAI_PMH xml file
         XMLBuilder xmlBuilder = new XMLBuilder(System.getProperty("user.dir") + File.separator +"oaiPmh.xml");
@@ -51,12 +54,14 @@ public class RegistryWS {
             System.out.println("FileName: " + fileName);
             
             XMLParser xmlParser = new XMLParser(xmlFolder + File.separator + fileName);
+            
+            String lastModified = xmlParser.getLastModifiedElement();
+            
             NodeList metadataList = xmlParser.parseWholeXML(xmlParser.getRootElement());
             
-            xmlBuilder.createRecordElement(xmlParser.getTypeElement(), xmlParser.getRootElement(), metadataList);        
+            xmlBuilder.createRecordElement(xmlParser.getTypeElement(), xmlParser.getRootElement(), metadataList, lastModified);        
         }
         
-        xmlBuilder.createResumptionToken("X599391871/1");
         String initialOAI = xmlBuilder.exportXMLFile();
         
         // the service returns the created oai-pmh file 
