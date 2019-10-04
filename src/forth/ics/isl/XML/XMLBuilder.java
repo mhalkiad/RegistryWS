@@ -109,7 +109,7 @@ public class XMLBuilder {
     }
     
     
-    public void createRecordElement(String setSpec, Node rootElement, NodeList metadataList, String lastModified) throws ParserConfigurationException, SAXException, IOException, TransformerException {
+    public void createRecordElement(String setSpec, Node rootElement, NodeList metadataList, String lastModified, String uID) throws ParserConfigurationException, SAXException, IOException, TransformerException {
         
         Element recordElement = document.createElement("record");
         listRecordsElement.appendChild(recordElement);
@@ -118,7 +118,7 @@ public class XMLBuilder {
         recordElement.appendChild(headerElement);
         
         Element idElement = document.createElement("identifier");
-        idElement.appendChild(document.createTextNode(UUID.randomUUID().toString()));
+        idElement.appendChild(document.createTextNode(uID));
         headerElement.appendChild(idElement);
         
         Element dateStampElement = document.createElement("datestamp");

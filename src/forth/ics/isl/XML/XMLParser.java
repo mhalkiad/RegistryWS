@@ -103,8 +103,8 @@ public class XMLParser {
             // trim() is used to ignore new lines and spaces elements.
                 if(!childNode.getTextContent().trim().isEmpty())
                 {
-                    System.out.println(childNode.toString());
-                    System.out.println(childNode.getTextContent());
+//                    System.out.println(childNode.toString());
+//                    System.out.println(childNode.getTextContent());
                 }
             }
             parseWholeXML(childNode);

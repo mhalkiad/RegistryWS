@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
@@ -30,6 +31,7 @@ public class RegistryWS {
     public Response registry(@QueryParam("verb") String verb,
                              @QueryParam("metadata") String metadata) throws ParserConfigurationException, TransformerConfigurationException, TransformerException, SAXException, IOException {   
         
+        //todo changes no hard coded path for xml Files
         String xmlFolder = "/home/mhalkiad/Desktop/xmlFiles";
         
         // create initial OAI_PMH xml file
@@ -38,7 +40,7 @@ public class RegistryWS {
         
         xmlBuilder.createOaipmhElement("http://www.openarchives.org/OAI/2.0/",
                                        "http://www.w3.org/2001/XMLSchema-instance",
-                                       "http://www.openarchives.org/OAI/2.0/\n" +
+                                       "http://www.openarchives.org/OAI/2.0/ " +
                                        "http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd");
         
         xmlBuilder.createResponseDateElement();
@@ -59,7 +61,11 @@ public class RegistryWS {
             
             NodeList metadataList = xmlParser.parseWholeXML(xmlParser.getRootElement());
             
-            xmlBuilder.createRecordElement(xmlParser.getTypeElement(), xmlParser.getRootElement(), metadataList, lastModified);        
+            String[] name = fileName.split(".xml");
+            String uId = "forth-rdf-" + name[0] + "-service";
+
+            
+            xmlBuilder.createRecordElement(xmlParser.getTypeElement(), xmlParser.getRootElement(), metadataList, lastModified, uId);        
         }
         
         String initialOAI = xmlBuilder.exportXMLFile();
