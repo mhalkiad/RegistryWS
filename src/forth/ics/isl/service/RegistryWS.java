@@ -32,6 +32,7 @@ public class RegistryWS {
                              @QueryParam("metadata") String metadata) throws ParserConfigurationException, TransformerConfigurationException, TransformerException, SAXException, IOException {   
         
         //todo changes no hard coded path for xml Files
+        //String xmlFolder = "/root/xmlFiles";
         String xmlFolder = "/home/mhalkiad/Desktop/xmlFiles";
         
         // create initial OAI_PMH xml file
